@@ -1,4 +1,3 @@
 !(function () {
-    console.log("TEST SCRIPT TAG GITHUB")
+    console.log("TEST SCRIPT TAG")
  })()
- 
