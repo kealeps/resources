@@ -19,14 +19,20 @@
 	        function connect() {
 
                 var order = document.getElementById('from').value;
+				var father = document.getElementById('father');
 	            var socket = new SockJS('https://popup-dev.shopwin.io/checkout/websocket');
 	            stompClient = Stomp.over(socket);
 
 	            stompClient.connect({}, function(frame) {
 
 	            	setConnected(true);
-	                console.log('Connected: ' + frame);
 	                stompClient.subscribe(`/topic/order/${order}`, function(messageOutput) {
+
+						var child = document.createElement("div");
+						child.innerHTML = messageOutput.body + "<br>";
+						father.appendChild(child);
+
+
 	                });
 	            });
 	        }
@@ -58,6 +64,11 @@
 		        <button id="connect" onclick="connect();">Connect</button>
 		        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
 		    </div>
+			<br />
+			<div id="father">
+				<br />
+
+			</div>
 		    <br />
 		</div>
 
