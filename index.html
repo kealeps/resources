@@ -26,10 +26,10 @@
 	            stompClient.connect({}, function(frame) {
 
 	            	setConnected(true);
-	                stompClient.subscribe(`/topic/order/${order}`, function(messageOutput) {
+	                stompClient.subscribe(`/topic/orders`, function(messageOutput) {
 
 						var child = document.createElement("div");
-						child.innerHTML = messageOutput.body + "<br>";
+						child.innerHTML = messageOutput.body + "/n";
 						father.appendChild(child);
 
 
