@@ -19,7 +19,7 @@
 
 	        function connect() {
 
-	            var socket = new SockJS('wss://popup-dev.myshopify.com/checkout/websocket');
+	            var socket = new SockJS('https://popup-dev.shopwin.io/checkout/websocket');
 	            stompClient = Stomp.over(socket);
 
 	            stompClient.connect({}, function(frame) {
