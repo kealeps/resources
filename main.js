@@ -1,1 +1,3 @@
-export default funnels = [1, 2]
+export default settings = [{
+    name: "kevin"
+}, { name: "tomas" }]
