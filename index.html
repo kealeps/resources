@@ -26,7 +26,7 @@
 	            stompClient.connect({}, function(frame) {
 
 	            	setConnected(true);
-	                stompClient.subscribe(`/topic/orders`, function(messageOutput) {
+	                stompClient.subscribe(`/topic/references`, function(messageOutput) {
 
 						var child = document.createElement("div");
 						child.innerHTML = messageOutput.body + "/n";
