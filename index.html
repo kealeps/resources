@@ -1,76 +1,85 @@
 <html>
-	<head>
-	    <title>WebSocket</title>
-	    
-	    <script src="sock.js"></script>
-	    <script src="stomp.js"></script>
-	    
-	    <script type="text/javascript">
+  <head>
+    <title>WebSocket</title>
 
-	        var stompClient = null;
+    <script src="sock.js"></script>
+    <script src="stomp.js"></script>
 
-	        function setConnected(connected) {
+    <script type="text/javascript">
+      var stompClient = null;
 
-	            document.getElementById('connect').disabled = connected;
-	            document.getElementById('disconnect').disabled = !connected;
-	            
-	        }
+      function setConnected(connected) {
+        document.getElementById("connect").disabled = connected;
+        document.getElementById("disconnect").disabled = !connected;
+      }
 
-	        function connect() {
+      function connect() {
+        var order = document.getElementById("from").value;
+        var father = document.getElementById("father");
+        var socket = new SockJS(
+          "https://popup-dev.shopwin.io/checkout/websocket"
+        );
+        stompClient = Stomp.over(socket);
 
-                var order = document.getElementById('from').value;
-				var father = document.getElementById('father');
-	            var socket = new SockJS('https://popup-dev.shopwin.io/checkout/websocket');
-	            stompClient = Stomp.over(socket);
+        console.log(`Order -> ${order}`);
 
-	            stompClient.connect({}, function(frame) {
+        stompClient.connect({}, function (frame) {
+          setConnected(true);
 
-	            	setConnected(true);
-	                stompClient.subscribe(`/topic/references`, function(messageOutput) {
+          var child = document.createElement("div");
+          child.innerHTML = "Connection Successfully";
+          father.appendChild(child);
 
-						var child = document.createElement("div");
-						child.innerHTML = messageOutput.body + "/n";
-						father.appendChild(child);
+          if (order) {
+            stompClient.subscribe(
+              `/topic/reference/${order}`,
+              function (messageOutput) {
+                var child = document.createElement("div");
+                child.innerHTML = messageOutput.body;
+                father.appendChild(child);
+              }
+            );
+          } else {
+            stompClient.subscribe(
+              `/topic/references`,
+              function (messageOutput) {
+                var child = document.createElement("div");
+                child.innerHTML = messageOutput.body;
+                father.appendChild(child);
+              }
+            );
+          }
+        });
+      }
 
+      function disconnect() {
+        if (stompClient != null) {
+          stompClient.disconnect();
+        }
 
-	                });
-	            });
-	        }
+        setConnected(false);
+        console.log("Disconnected");
+      }
+    </script>
+  </head>
 
-	        function disconnect() {
-
-	            if(stompClient != null) {
-	                stompClient.disconnect();
-	            }
-
-	            setConnected(false);
-	            console.log("Disconnected");
-	        }
-
-	    </script>
-	    
-	</head>
-	
-	<body onload="disconnect()">
-
-		<div>
-		
-		
-			<div>
-				<input type="text" id="from" placeholder="Order ID"/>
-			</div>
-			<br />
-		    <div>
-		        <button id="connect" onclick="connect();">Connect</button>
-		        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
-		    </div>
-			<br />
-			<div id="father">
-				<br />
-
-			</div>
-		    <br />
-		</div>
-
-	</body>
+  <body onload="disconnect()">
+    <div>
+      <div>
+        <input type="text" id="from" placeholder="Order ID" />
+      </div>
+      <br />
+      <div>
+        <button id="connect" onclick="connect();">Connect</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">
+          Disconnect
+        </button>
+      </div>
+      <br />
+      <div id="father">
+        <br />
+      </div>
+      <br />
+    </div>
+  </body>
 </html>
